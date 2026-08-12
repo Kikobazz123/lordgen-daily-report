@@ -1,0 +1,68 @@
+{
+  "generatedAt": "2026-08-12T16:48:05.725Z",
+  "folders": [
+    {
+      "label": "Lordgen AI Skill builder",
+      "path": "C:\\Users\\USER\\Lordgen AI Skill builder",
+      "exists": true,
+      "fileCount": 11,
+      "latestMtimeMs": 1786174382182.2659
+    },
+    {
+      "label": "Lordgen ai scraper",
+      "path": "C:\\Users\\USER\\Lordgen ai scraper",
+      "exists": true,
+      "fileCount": 10,
+      "latestMtimeMs": 1786135981758.728
+    },
+    {
+      "label": "Lordgen Markdown files",
+      "path": "C:\\Users\\USER\\Downloads\\Lordgen Markdown files",
+      "exists": true,
+      "fileCount": 7,
+      "latestMtimeMs": 1786141851404.8345
+    },
+    {
+      "label": "Lordgen AI Post Reference",
+      "path": "C:\\Users\\USER\\Downloads\\Lordgen AI Post Reference",
+      "exists": true,
+      "fileCount": 2,
+      "latestMtimeMs": 1786235140143.2703
+    },
+    {
+      "label": "Lordgen main files",
+      "path": "C:\\Users\\USER\\Downloads\\Lordgen main files",
+      "exists": true,
+      "fileCount": 15,
+      "latestMtimeMs": 1786553244942.2737
+    },
+    {
+      "label": "lordgen-pitch skill",
+      "path": "C:\\Users\\USER\\.claude\\skills\\lordgen-pitch",
+      "exists": true,
+      "fileCount": 5,
+      "latestMtimeMs": 1786447111245.2903
+    },
+    {
+      "label": "tool-scout skill",
+      "path": "C:\\Users\\USER\\.claude\\skills\\tool-scout",
+      "exists": true,
+      "fileCount": 2,
+      "latestMtimeMs": 1786447306553.4802
+    },
+    {
+      "label": "lordgen-agent-directory skill",
+      "path": "C:\\Users\\USER\\.claude\\skills\\lordgen-agent-directory",
+      "exists": true,
+      "fileCount": 7,
+      "latestMtimeMs": 1786535190981.091
+    },
+    {
+      "label": "credential-gate skill",
+      "path": "C:\\Users\\USER\\.claude\\skills\\credential-gate",
+      "exists": true,
+      "fileCount": 1,
+      "latestMtimeMs": 1786534442805.6904
+    }
+  ]
+}

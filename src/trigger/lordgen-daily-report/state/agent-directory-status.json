@@ -1,0 +1,19 @@
+{
+  "last_updated": "2026-08-12",
+  "loops_active": 3,
+  "loops_active_names": ["Revenue Loop", "Delivery Loop", "Self-Improvement Loop"],
+  "agents_proposed": 8,
+  "orchestration_roles_proposed": 5,
+  "agents_parked": 19,
+  "parked_breakdown": {
+    "agent_layer_v1": 9,
+    "template_factory_v1": 10
+  },
+  "live_agents_running": 0,
+  "sources": {
+    "active": "LordGen_Master_Brief_v3.md",
+    "parked": "LordGen_Master_Brief_for_Claude.md",
+    "proposed": "Deep Research report.md + Executive Summary.md"
+  },
+  "note": "No agents are live yet in any roster. Counts reflect proposals across three unreconciled documents, not a running system."
+}

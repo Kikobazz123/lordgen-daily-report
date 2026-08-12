@@ -1,0 +1,38 @@
+{
+  "buildProgress": {
+    "snapshotGeneratedAt": "2026-08-12T16:48:05.725Z",
+    "changedEntries": [
+      { "label": "Lordgen main files", "fileCount": 15, "latestMtimeMs": 1786553244942 },
+      { "label": "lordgen-agent-directory skill", "fileCount": 7, "latestMtimeMs": 1786535190981 },
+      { "label": "credential-gate skill", "fileCount": 1, "latestMtimeMs": 1786534442805 }
+    ],
+    "unchangedCount": 6,
+    "missingCount": 0,
+    "agentDirectory": {
+      "last_updated": "2026-08-12",
+      "loops_active": 3,
+      "loops_active_names": ["Revenue Loop", "Delivery Loop", "Self-Improvement Loop"],
+      "agents_proposed": 8,
+      "orchestration_roles_proposed": 5,
+      "agents_parked": 19,
+      "parked_breakdown": { "agent_layer_v1": 9, "template_factory_v1": 10 },
+      "live_agents_running": 0,
+      "sources": {
+        "active": "LordGen_Master_Brief_v3.md",
+        "parked": "LordGen_Master_Brief_for_Claude.md",
+        "proposed": "Deep Research report.md + Executive Summary.md"
+      },
+      "note": "No agents are live yet in any roster. Counts reflect proposals across three unreconciled documents, not a running system."
+    }
+  },
+  "competitorResearch": {
+    "nigerianSme": {
+      "content": "Techzoid Innovation, Brela Agency, Huxxle, and Responsive AI Agency offer WhatsApp chatbots, CRM pipelines, and workflow automation for Nigerian SMEs. None publish public pricing; engagements appear quote-based. Huxxle is the most productized, bundling inventory, CRM, invoicing, and storefronts.",
+      "citations": ["https://www.techzoidinnovation.com/services/ai-solutions", "https://www.huxxle.com/"]
+    },
+    "generalAiConsulting": {
+      "content": "Cieden ($50-99/hr), RTS Labs ($5,000-50,000 per engagement), and MQLFlow (packages from £2,900) serve SMB/mid-market clients with AI readiness audits, workflow automation, and agent systems. Pricing is mostly project-based or hourly rather than fixed packages.",
+      "citations": ["https://cieden.com/ai-consulting-firms-for-small-businesses", "https://rtslabs.com/ai-consulting-for-small-businesses"]
+    }
+  }
+}

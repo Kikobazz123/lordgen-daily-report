@@ -1,0 +1,5 @@
+{
+  "subject": "LordGen Daily Report — test send",
+  "textBody": "This is a test send from the local Trigger.dev dev server, verifying the Gmail OAuth send path works end to end. No real report content yet.",
+  "htmlBody": "<p>This is a <strong>test send</strong> from the local Trigger.dev dev server, verifying the Gmail OAuth send path works end to end. No real report content yet.</p>"
+}
