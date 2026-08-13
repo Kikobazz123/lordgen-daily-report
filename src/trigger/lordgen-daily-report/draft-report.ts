@@ -11,6 +11,7 @@ export interface DraftReportOutput {
   subject: string;
   htmlBody: string;
   textBody: string;
+  markdownBody: string;
 }
 
 const VOICE_RULES = `Voice rules, non-negotiable:
@@ -42,7 +43,10 @@ Structure the email in this order:
    data given (e.g. if nothing changed, say so plainly rather than padding with generic advice).
 
 htmlBody should be simple inline-styled HTML (headings, paragraphs, a small table for the
-competitor sections is fine). textBody is the plain-text equivalent.
+competitor sections is fine). textBody is the plain-text equivalent. markdownBody is the same
+content again in clean Markdown (### headings, bullet lists, pipe tables) — this version is
+posted to a ClickUp task, so it must render correctly there: standard Markdown table syntax,
+no HTML tags.
 
 DATA:
 ${JSON.stringify(input, null, 2)}`;
@@ -54,8 +58,9 @@ const RESPONSE_SCHEMA = {
     subject: { type: "STRING" },
     htmlBody: { type: "STRING" },
     textBody: { type: "STRING" },
+    markdownBody: { type: "STRING" },
   },
-  required: ["subject", "htmlBody", "textBody"],
+  required: ["subject", "htmlBody", "textBody", "markdownBody"],
 };
 
 export const draftReport = task({
@@ -90,8 +95,8 @@ export const draftReport = task({
     if (!text) throw new Error("Gemini response had no text content");
 
     const parsed: DraftReportOutput = JSON.parse(text);
-    if (!parsed.subject || !parsed.htmlBody || !parsed.textBody) {
-      throw new Error("Gemini response missing required keys (subject/htmlBody/textBody)");
+    if (!parsed.subject || !parsed.htmlBody || !parsed.textBody || !parsed.markdownBody) {
+      throw new Error("Gemini response missing required keys (subject/htmlBody/textBody/markdownBody)");
     }
     return parsed;
   },

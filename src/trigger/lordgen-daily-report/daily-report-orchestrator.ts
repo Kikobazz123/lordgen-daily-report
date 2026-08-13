@@ -3,6 +3,7 @@ import { gatherBuildProgress } from "./gather-build-progress.js";
 import { researchCompetitors } from "./research-competitors.js";
 import { draftReport } from "./draft-report.js";
 import { sendReportEmail } from "./send-report-email.js";
+import { updateClickUpTask } from "./update-clickup-task.js";
 
 const REQUIRED_ENV_VARS = [
   "PERPLEXITY_API_KEY",
@@ -12,6 +13,7 @@ const REQUIRED_ENV_VARS = [
   "GMAIL_REFRESH_TOKEN",
   "GMAIL_SENDER_EMAIL",
   "REPORT_RECIPIENT_EMAIL",
+  "CLICKUP_API_TOKEN",
 ] as const;
 
 // 7am WAT (matches LordGen's Nigerian SME audience). Confirm/change if a different
@@ -65,8 +67,19 @@ export const dailyReportOrchestrator = schedules.task({
       throw new Error(`send-report-email failed: ${JSON.stringify(sendResult.error)}`);
     }
 
+    // No idempotency key needed here — this is a PUT (full overwrite), not a create,
+    // so re-running it same day just re-writes equivalent content, no duplication risk.
+    const clickupResult = await updateClickUpTask.triggerAndWait({
+      subject: draftResult.output.subject,
+      markdownBody: draftResult.output.markdownBody,
+    });
+    if (!clickupResult.ok) {
+      throw new Error(`update-clickup-task failed: ${JSON.stringify(clickupResult.error)}`);
+    }
+
     return {
       sent: sendResult.output.sent,
+      clickupUpdated: clickupResult.output.updated,
       subject: draftResult.output.subject,
       changedEntryCount: buildProgressResult.output.changedEntries.length,
     };
