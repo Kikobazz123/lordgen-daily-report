@@ -3,8 +3,7 @@
  *
  * Mints a Gmail refresh token for the `gmail.send` scope, using
  * GMAIL_CLIENT_ID / GMAIL_CLIENT_SECRET from .env (an OAuth Desktop-app
- * client — reuse the one already authorized in
- * C:\Users\USER\Newsletter Demo\credentials.json, or create a new one at
+ * client — reuse an existing one, or create a new one at
  * https://console.cloud.google.com > APIs & Services > Credentials).
  *
  * Run: `npm run gmail-oauth-setup`
@@ -15,8 +14,12 @@ import "dotenv/config";
 import { createServer } from "node:http";
 import { exec } from "node:child_process";
 
-const PORT = 53_682;
-const REDIRECT_URI = `http://127.0.0.1:${PORT}/callback`;
+// Must match a redirect URI registered on the Google OAuth client.
+// The documented default lives in .env.example.
+const REDIRECT_URI = process.env.OAUTH_REDIRECT_URI ?? "";
+if (!REDIRECT_URI) throw new Error("OAUTH_REDIRECT_URI is not set in .env (see .env.example)");
+const redirect = new URL(REDIRECT_URI);
+const PORT = Number(redirect.port);
 
 const clientId = process.env.GMAIL_CLIENT_ID;
 const clientSecret = process.env.GMAIL_CLIENT_SECRET;
@@ -33,7 +36,7 @@ authUrl.searchParams.set("access_type", "offline");
 authUrl.searchParams.set("prompt", "consent");
 
 const server = createServer(async (req, res) => {
-  if (!req.url?.startsWith("/callback")) {
+  if (!req.url?.startsWith(redirect.pathname)) {
     res.writeHead(404).end();
     return;
   }
