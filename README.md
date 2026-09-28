@@ -6,7 +6,7 @@ research, drafted into a readable brief.
 
 Built by **[Lordmark Dorgu](https://github.com/Kikobazz123)** · MIT licensed.
 
-<!-- TODO: add screenshot of a delivered report email -->
+![A real report from the live pipeline, rendered as the email body](docs/report-email.png)
 
 ---
 
