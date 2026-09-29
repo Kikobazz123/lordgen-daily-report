@@ -1,6 +1,6 @@
 import { schedules, idempotencyKeys } from "@trigger.dev/sdk";
 import { gatherBuildProgress } from "./gather-build-progress.js";
-import { researchCompetitors } from "./research-competitors.js";
+import { researchCompetitors, unavailable } from "./research-competitors.js";
 import { draftReport } from "./draft-report.js";
 import { sendReportEmail } from "./send-report-email.js";
 import { updateClickUpTask } from "./update-clickup-task.js";
@@ -33,14 +33,20 @@ export const dailyReportOrchestrator = schedules.task({
       throw new Error(`gather-build-progress failed: ${JSON.stringify(buildProgressResult.error)}`);
     }
 
+    // Research is the optional part of the report. If it still fails after its own
+    // retries, send the build-progress report anyway and say research is missing,
+    // rather than sending nothing (which is what happened for a week in Sept 2026).
     const competitorResearchResult = await researchCompetitors.triggerAndWait({});
-    if (!competitorResearchResult.ok) {
-      throw new Error(`research-competitors failed: ${JSON.stringify(competitorResearchResult.error)}`);
-    }
+    const competitorResearch = competitorResearchResult.ok
+      ? competitorResearchResult.output
+      : (() => {
+          const reason = `research-competitors failed: ${JSON.stringify(competitorResearchResult.error).slice(0, 200)}`;
+          return { nigerianSme: unavailable(reason), generalAiConsulting: unavailable(reason) };
+        })();
 
     const draftResult = await draftReport.triggerAndWait({
       buildProgress: buildProgressResult.output,
-      competitorResearch: competitorResearchResult.output,
+      competitorResearch,
     });
     if (!draftResult.ok) {
       throw new Error(`draft-report failed: ${JSON.stringify(draftResult.error)}`);

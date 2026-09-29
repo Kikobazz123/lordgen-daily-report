@@ -5,9 +5,35 @@ export interface PerplexityResult {
   citations: string[];
 }
 
+/**
+ * One research section. `available: false` means no research was done today and
+ * `unavailableReason` says why; the report states that instead of inventing a
+ * section, and the rest of the report still goes out.
+ */
+export interface ResearchSection extends PerplexityResult {
+  available: boolean;
+  unavailableReason?: string;
+}
+
 export interface CompetitorResearchOutput {
-  nigerianSme: PerplexityResult;
-  generalAiConsulting: PerplexityResult;
+  nigerianSme: ResearchSection;
+  generalAiConsulting: ResearchSection;
+}
+
+export function unavailable(reason: string): ResearchSection {
+  return { available: false, unavailableReason: reason, content: "", citations: [] };
+}
+
+/**
+ * Errors that retrying cannot fix: no credits, bad key. Retrying these only
+ * delays the report, so they end research for the day immediately.
+ * Sept 2026: an exhausted Perplexity balance returned 401 insufficient_quota on
+ * every call, and because this task threw, no report was sent for a week.
+ */
+class PermanentResearchError extends Error {}
+
+function isPermanent(status: number, body: string): boolean {
+  return status === 401 || status === 402 || status === 403 || /insufficient_quota/i.test(body);
 }
 
 const NIGERIAN_SME_PROMPT = `Identify comparable Nigerian SME/trade-automation service providers — companies
@@ -43,7 +69,9 @@ async function callPerplexity(apiKey: string, prompt: string): Promise<Perplexit
   });
 
   if (!response.ok) {
-    throw new Error(`Perplexity API error: ${response.status} ${await response.text()}`);
+    const body = await response.text();
+    const message = `Perplexity API error: ${response.status} ${body.slice(0, 300)}`;
+    throw isPermanent(response.status, body) ? new PermanentResearchError(message) : new Error(message);
   }
 
   const data = await response.json();
@@ -57,12 +85,28 @@ export const researchCompetitors = task({
   id: "research-competitors",
   run: async (): Promise<CompetitorResearchOutput> => {
     const apiKey = process.env.PERPLEXITY_API_KEY;
-    if (!apiKey) throw new Error("PERPLEXITY_API_KEY is not set");
+    if (!apiKey) {
+      const reason = "PERPLEXITY_API_KEY is not set";
+      return { nigerianSme: unavailable(reason), generalAiConsulting: unavailable(reason) };
+    }
 
     // Sequential, not Promise.all — parallel calls tripped the account's per-second rate limit.
-    const nigerianSme = await callPerplexity(apiKey, NIGERIAN_SME_PROMPT);
-    const generalAiConsulting = await callPerplexity(apiKey, GENERAL_AI_CONSULTING_PROMPT);
+    // A permanent error (no credits, bad key) ends research for the day without retrying;
+    // anything else still throws, so a transient failure gets the task's normal retries.
+    const sections: ResearchSection[] = [];
+    for (const prompt of [NIGERIAN_SME_PROMPT, GENERAL_AI_CONSULTING_PROMPT]) {
+      try {
+        sections.push({ ...(await callPerplexity(apiKey, prompt)), available: true });
+      } catch (e) {
+        if (!(e instanceof PermanentResearchError)) throw e;
+        const reason = e.message.includes("insufficient_quota")
+          ? "Perplexity credits are exhausted (add credits at console.perplexity.ai)"
+          : e.message;
+        while (sections.length < 2) sections.push(unavailable(reason));
+        break;
+      }
+    }
 
-    return { nigerianSme, generalAiConsulting };
+    return { nigerianSme: sections[0], generalAiConsulting: sections[1] };
   },
 });
